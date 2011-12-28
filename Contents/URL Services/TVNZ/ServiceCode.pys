@@ -1,0 +1,24 @@
+import re
+
+
+####################################################################################################
+def MetadataObjectForURL(url):
+    try:
+
+        return VideoClipObject()
+
+    except:
+        Log.Exception("An error occurred while attempting to retrieve the required meta data.")
+
+####################################################################################################
+def MediaObjectsForURL(url):
+    return [
+      MediaObject(
+        video_resolution = "360",
+        parts = [PartObject(key = url)]
+      ),
+      MediaObject(
+        video_resolution = "240",
+        parts = [PartObject(key= url)]
+      )
+    ]
