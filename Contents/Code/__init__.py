@@ -35,11 +35,8 @@ def MainMenu():
   for item in nav.xpath("//MenuItem"):
 
     title = item.get('title')
-    Log(title)
     url = item.get('href')
-    Log(url)
     type = item.get('type')
-    Log(type)
 
     if type == "shows":    
       oc.add(DirectoryObject(key = Callback(EpisodeMenu, title = title, url = url), title = title))
@@ -74,8 +71,6 @@ def ShowMenu(title, url, letter):
   for item in nav.xpath(nav_string):
 
     title = item.get('title')
-    Log(title)
-    Log(url)
     url = item.get('href')
     oc.add(DirectoryObject(
       key = Callback(EpisodeMenu, title = title, url = url), 
@@ -104,7 +99,6 @@ def EpisodeMenu(title, url):
     series = None
     episode = None
     index_descriptor = episode_details[0]
-    Log(index_descriptor)
     try:
       index_dict = re.match("Series (?P<series>[0-9]+), Episode (?P<episode>[0-9]+)", index_descriptor).groupdict()
       series = int(index_dict['series'])
@@ -117,22 +111,12 @@ def EpisodeMenu(title, url):
     except: pass
 
     # The duration of the video
-    try:
-      duration_text = episode_details[2]
-      duration_dict = re.match("(?P<hours>[0-9]+):(?P<mins>[0-9]+):(?P<secs>[0-9]+)", duration_text).groupdict()
-      hours = int(duration_dict['hours'])
-      mins = int(duration_dict['mins'])
-      secs = int(duration_dict['secs'])
-      duration = ((((hours * 60) + mins) * 60) + secs) * 1000
-    except: Log(duration_text)
-    
-    Log(title)
-    Log(summary)
-    Log(thumb)
-    Log(str(duration))
-    Log(str(series))
-    Log(str(episode))
-    Log(str(date))
+    duration_text = episode_details[2]
+    duration_dict = re.match("(?P<hours>[0-9]+):(?P<mins>[0-9]+):(?P<secs>[0-9]+)", duration_text).groupdict()
+    hours = int(duration_dict['hours'])
+    mins = int(duration_dict['mins'])
+    secs = int(duration_dict['secs'])
+    duration = ((((hours * 60) + mins) * 60) + secs) * 1000
       
     oc.add(EpisodeObject(
       url = URL_SERVICE % ref,
