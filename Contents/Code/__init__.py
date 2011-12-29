@@ -8,7 +8,7 @@ ICON = 'icon-default.png'
 
 URL_BASE = "http://tvnz.co.nz"
 URL_NAVIGATION = "http://tvnz.co.nz/content/ps3_navigation/ps3_xml_skin.xml"
-URL_SERVICE = "tvnz://%s"
+URL_SERVICE = "http://tvnz.co.nz/content/%s"
 
 ####################################################################################################
 
@@ -48,7 +48,7 @@ def MainMenu():
 ####################################################################################################
 
 def AlphabeticalMenu(title, url):
-  oc = ObjectContainer()
+  oc = ObjectContainer(title2 = title)
 
   nav = XML.ElementFromURL(URL_BASE + url)
   for item in nav.xpath("//Letter"):
@@ -63,7 +63,7 @@ def AlphabeticalMenu(title, url):
 ####################################################################################################
 
 def ShowMenu(title, url, letter):
-  oc = ObjectContainer()
+  oc = ObjectContainer(title2 = title)
 
   nav = XML.ElementFromURL(URL_BASE + url)
   nav_string = "//Letter[@label = '%s']/Show" % letter
@@ -81,7 +81,7 @@ def ShowMenu(title, url, letter):
 ####################################################################################################
 
 def EpisodeMenu(title, url):
-  oc = ObjectContainer()
+  oc = ObjectContainer(title2 = title, view_group = 'InfoList')
 
   nav = XML.ElementFromURL(URL_BASE + url)
   for item in nav.xpath("//Episode"):
