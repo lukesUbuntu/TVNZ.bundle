@@ -1,6 +1,5 @@
 import re
 
-
 ####################################################################################################
 def MetadataObjectForURL(url):
     try:
@@ -14,11 +13,7 @@ def MetadataObjectForURL(url):
 def MediaObjectsForURL(url):
     return [
       MediaObject(
-        video_resolution = "360",
-        parts = [PartObject(key = url)]
-      ),
-      MediaObject(
-        video_resolution = "240",
-        parts = [PartObject(key= url)]
+        parts = [PartObject(key=WebVideoURL(url))],
+        protocol = Protocol.WebKit
       )
     ]
