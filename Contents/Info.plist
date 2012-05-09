@@ -24,15 +24,5 @@
 	<array>
 		<string>NZ</string>
 	</array>
-    <key>PlexURLServices</key>
-    <dict>
-        <key>TVNZ</key>
-        <dict>
-            <key>URLPattern</key>
-            <string>http://tvnz.co.nz/content/[0-9]+</string>
-            <key>Identifier</key>
-            <string>com.plexapp.plugins.tvnz</string>
-        </dict>
-    </dict>
 </dict>
 </plist>
