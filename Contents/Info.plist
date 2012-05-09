@@ -32,10 +32,6 @@
             <string>http://tvnz.co.nz/content/[0-9]+</string>
             <key>Identifier</key>
             <string>com.plexapp.plugins.tvnz</string>
-            <key>TestURLs</key>
-            <array>
-                <string>http://tvnz.co.nz/content/4599313</string>
-            </array>
         </dict>
     </dict>
 </dict>

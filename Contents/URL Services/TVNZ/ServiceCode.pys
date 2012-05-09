@@ -1,18 +1,16 @@
 import re
 
-AMF_URL = 'http://c.brightcove.com/services/messagebroker/amf'
+AMF_URL = 'http://c.brightcove.com/services/messagebroker/amf?playerId='
+REFERENCE = Regex('/(?P<id>[0-9]+)')
 
 ####################################################################################################
 def MetadataObjectForURL(url):
     try:
 
-        page = HTML.ElementFromURL(url)
+        player_id = '1029272630001'
+        reference = REFERENCE.search(url).group('id')
+        details = AmfRequest(player_id, reference, url)
 
-        player_id = page.xpath("//param[@name = 'playerID']")[0].get('value')
-        reference = page.xpath("//param[@name = '@videoPlayer']")[0].get('value')
-        reference = reference.split(':')[-1]
-
-        details = AmfRequest(player_id, reference)
         return VideoClipObject(
             title = details['displayName'],
             summary = details['longDescription'],
@@ -23,25 +21,38 @@ def MetadataObjectForURL(url):
         Log.Exception("An error occurred while attempting to retrieve the required meta data.")
 
 ####################################################################################################
+@deferred
 def MediaObjectsForURL(url):
-    return [
-      MediaObject(
-        parts = [PartObject(key=WebVideoURL(url))],
-        protocol = Protocol.WebKit
-      )
-    ]
+
+  player_id = '1029272630001'
+  reference = REFERENCE.search(url).group('id')
+  details = AmfRequest(player_id, reference, url)
+
+  objects = []
+  for video in details['renditions']:
+    player_url = video['defaultURL']
+    player = player_url[:player_url.find('&')]
+    clip = player_url[player_url.find('&') + 1:]
+    swf_url = "http://admin.brightcove.com/viewer/us20120112.1115/BrightcoveBootloader.swf"
+
+    objects.append(MediaObject(
+      parts = [PartObject(key = RTMPVideoURL(player, clip, swf_url = swf_url))],
+      video_resolution = video['frameHeight'],
+      video_frame_rate = video['encodingRate']))
+
+  return objects
 
 ####################################################################################################
-def AmfRequest(playerID=None, refId=None):
+def AmfRequest(playerID=None, refId=None, url=''):
 
-  client = AMF.RemotingService(url=AMF_URL, user_agent='', client_type=3)
+  client = AMF.RemotingService(url=AMF_URL + playerID, user_agent='', client_type=3)
   service = client.getService('com.brightcove.experience.ExperienceRuntimeFacade')
 
   AMF.RegisterClass(ContentOverride, 'com.brightcove.experience.ContentOverride')
   AMF.RegisterClass(ViewerExperienceRequest, 'com.brightcove.experience.ViewerExperienceRequest')
 
   video_obj = ContentOverride(refId)
-  experience = ViewerExperienceRequest(playerID, video_obj)
+  experience = ViewerExperienceRequest(url = url, playerID = playerID, video_obj = video_obj)
 
   return service.getDataForExperience('', experience)['programmedContent']['videoPlayer']['mediaDTO']
 
@@ -58,11 +69,30 @@ class ContentOverride(object):
     self.contentRefId = refId
 
 class ViewerExperienceRequest(object):
-  def __init__ (self, playerID=None, video_obj=None):
+  def __init__ (self, url='', playerID=None, video_obj=None):
     self.experienceId = int(playerID)
     self.playerKey = ''
     self.contentOverrides = []
     self.contentOverrides.append(video_obj)
     self.TTLToken = ''
-    self.URL = ''
+    self.URL = url
     self.deliveryType = float('nan')
+
+####################################################################################################
+def TestURLs():
+    test_urls = []
+
+    root = XML.ElementFromURL("http://tvnz.co.nz/content/ps3_navigation/ps3_xml_skin.xml")
+    most_recent_url = "http://tvnz.co.nz/" + root.xpath("//MenuItem[@title = 'Most Recent']")[0].get('href')
+    most_recent = XML.ElementFromURL(most_recent_url)
+
+    results = most_recent.xpath("//Episode")
+    for item in results:
+
+        url = "http://tvnz.co.nz/content/" + item.get('href')
+        test_urls.append(url)
+
+        if len(test_urls) >= 2:
+            break
+
+    return test_urls
