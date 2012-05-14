@@ -12,7 +12,7 @@
 		<dict>
 			<key>URLPatterns</key>
 			<array>
-				<string>http://tvnz.co.nz/content/[0-9]+</string>
+				<string>http://tvnz.co.nz/.+(/|-)[0-9]+</string>
 			</array>
 		</dict>
 	</dict>

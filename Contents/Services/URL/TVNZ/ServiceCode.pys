@@ -1,14 +1,13 @@
 import re
 
 AMF_URL = 'http://c.brightcove.com/services/messagebroker/amf?playerId='
-REFERENCE = Regex('/(?P<id>[0-9]+)')
+REFERENCE = Regex('.*(/|-)(?P<id>[0-9]+)$')
 
 ####################################################################################################
 def MetadataObjectForURL(url):
     try:
-
         player_id = '1029272630001'
-        reference = REFERENCE.search(url).group('id')
+        reference = REFERENCE.match(url).groupdict()['id']
         details = AmfRequest(player_id, reference, url)
 
         return VideoClipObject(
@@ -23,7 +22,6 @@ def MetadataObjectForURL(url):
 ####################################################################################################
 @deferred
 def MediaObjectsForURL(url):
-
   player_id = '1029272630001'
   reference = REFERENCE.search(url).group('id')
   details = AmfRequest(player_id, reference, url)
