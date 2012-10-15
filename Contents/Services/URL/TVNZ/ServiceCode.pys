@@ -38,6 +38,7 @@ def MediaObjectsForURL(url):
       video_resolution = video['frameHeight'],
       video_frame_rate = video['encodingRate']))
 
+  objects = sorted(objects, key=lambda media: media.video_frame_rate, reverse=True)   
   return objects
 
 ####################################################################################################
