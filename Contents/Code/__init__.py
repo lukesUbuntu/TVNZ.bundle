@@ -47,6 +47,7 @@ def MainMenu():
 
 ####################################################################################################
 
+@route('/video/tvnz/alphabetical')
 def AlphabeticalMenu(title, url):
   oc = ObjectContainer(title2 = title)
 
@@ -62,6 +63,7 @@ def AlphabeticalMenu(title, url):
 
 ####################################################################################################
 
+@route('/video/tvnz/shows/{letter}')
 def ShowMenu(title, url, letter):
   oc = ObjectContainer(title2 = title)
 
@@ -80,6 +82,7 @@ def ShowMenu(title, url, letter):
 
 ####################################################################################################
 
+@route('/video/tvnz/episodes', allow_sync = True)
 def EpisodeMenu(title, url):
   oc = ObjectContainer(title2 = title, view_group = 'InfoList')
 
