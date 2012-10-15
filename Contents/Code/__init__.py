@@ -110,13 +110,15 @@ def EpisodeMenu(title, url):
     try: date = Datetime.ParseDate(episode_details[1])
     except: pass
 
-    # The duration of the video
-    duration_text = episode_details[2]
-    duration_dict = re.match("(?P<hours>[0-9]+):(?P<mins>[0-9]+):(?P<secs>[0-9]+)", duration_text).groupdict()
-    hours = int(duration_dict['hours'])
-    mins = int(duration_dict['mins'])
-    secs = int(duration_dict['secs'])
-    duration = ((((hours * 60) + mins) * 60) + secs) * 1000
+    # [Optional] The duration of the video
+    try:
+      duration_text = episode_details[2]
+      duration_dict = re.match("(?P<hours>[0-9]+):(?P<mins>[0-9]+):(?P<secs>[0-9]+)", duration_text).groupdict()
+      hours = int(duration_dict['hours'])
+      mins = int(duration_dict['mins'])
+      secs = int(duration_dict['secs'])
+      duration = ((((hours * 60) + mins) * 60) + secs) * 1000
+    except: pass
       
     oc.add(EpisodeObject(
       url = URL_SERVICE % ref,
